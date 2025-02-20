@@ -1,0 +1,143 @@
+"use client";
+import React, { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+
+const Generate = () => {
+  // const [link, setlink] = useState("");
+  // const [linktext, setlinktext] = useState("");
+  const [links, setLinks] = useState([{ link: "", linktext: "" }]);
+  const [handle, sethandle] = useState("");
+  const [pic, setpic] = useState("");
+  const handlechange = (index, link, linktext) => {
+    setLinks((initialLink) => {
+      return initialLink.map((item, i) => {
+        if (i === index) {
+          return { link, linktext };
+        } else {
+          return item;
+        }
+      });
+    });
+  };
+  const addLink = () => {
+    setLinks(links.concat([{ link: "", linktext: "" }]));
+  };
+
+  const submitLinks = async () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      links: links,
+      handle: handle,
+      pic: pic,
+    });
+    console.log(raw);
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    const r = await fetch("http://localhost:3000/api/add", requestOptions);
+    const result = await r.json();
+    toast(result.message);
+    // setlink("");
+    // setlinktext("");
+  };
+  return (
+    <div className="bg-orange-400 min-h-screen grid grid-cols-2 ">
+      <div className="col1 flex justify-center items-center flex-col ">
+        <div className="flex flex-col gap-5 my-8">
+          <h1 className="font-bold text-4xl">Create Your Linktree</h1>
+
+          <div className="items">
+            <h2 className="font-semibold text-2xl">
+              Step-1: Choose Your Handle
+            </h2>
+            <div className="mx-4">
+              <input
+                value={handle || ""}
+                onChange={(e) => {
+                  sethandle(e.target.value);
+                }}
+                className="px-4 py-2 mx-2 my-2 focus:outline-orange-300 rounded-full"
+                type="text"
+                placeholder="Choose a handle"
+              />
+            </div>
+          </div>
+          <div className="items">
+            <h2 className="font-semibold text-2xl">Step-2: Add Your Links</h2>
+            {links &&
+              links.map((item, index) => {
+                return (
+                  <div key={index} className="mx-4">
+                    <input
+                      value={item.link || ""}
+                      onChange={(e) => {
+                        handlechange(index, e.target.value, item.linktext);
+                      }}
+                      className="px-4 py-2 mx-2 my-2
+               focus:outline-orange-300 rounded-full"
+                      type="text"
+                      placeholder="Enter link Text"
+                    />
+
+                    <input
+                      value={item.linktext || ""}
+                      onChange={(e) => {
+                        handlechange(index, item.link, e.target.value);
+                      }}
+                      className="px-4 py-2 mx-2 my-2 focus:outline-orange-300 rounded-full"
+                      type="text"
+                      placeholder="Enter link"
+                    />
+                  </div>
+                );
+              })}
+            <button
+              onClick={() => addLink()}
+              className="p-5 py-2 rounded-3xl mx-2 bg-orange-800 text-white font-bold"
+            >
+              +Add Link
+            </button>
+          </div>
+          <div className="items">
+            <h2 className="font-semibold text-2xl">
+              Step-3: Add Your Picture and finalize
+            </h2>
+            <div className="mx-4 flex flex-col">
+              <input
+                value={pic || ""}
+                onChange={(e) => {
+                  setpic(e.target.value);
+                }}
+                className="px-4 py-2 mx-2 my-2
+                 focus:outline-orange-300 rounded-full"
+                type="text"
+                placeholder="Add your picture"
+              />
+              <button
+                onClick={() => {
+                  submitLinks();
+                }}
+                className="p-5 py-2 rounded-3xl mx-2 bg-orange-800 w-fit my-2 text-white font-bold"
+              >
+                Finalize
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="col2 w-full h-screen bg-orange-400">
+        <img className="h-full object-contain" src="login.png" />
+        <ToastContainer />
+      </div>
+    </div>
+  );
+};
+
+export default Generate;
