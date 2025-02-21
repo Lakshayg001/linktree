@@ -1,6 +1,14 @@
+"use client";
+import { useState } from "react";
 import Image from "next/image";
-
+import { useRouter } from "next/navigation";
 export default function Home() {
+  const router = useRouter();
+  const [text, setText] = useState("");
+  const createTree = () => {
+    router.push(`/generate?handle=${text}`);
+  };
+
   return (
     <main>
       <section className="bg-[#254f1a] min-h-[100vh] grid grid-cols-2">
@@ -17,10 +25,15 @@ export default function Home() {
           </p>
           <div className="input flex gap-2">
             <input
+              value={text}
+              onChange={(e) => setText(e.target.value)}
               className="focus:outline-green-800 px-2 py-2 rounded-md"
               placeholder="linktr.ee/yourname"
             />
-            <button className="bg-pink-300 rounded-full px-4 py-4">
+            <button
+              onClick={() => createTree()}
+              className="bg-pink-300 rounded-full px-4 py-4"
+            >
               Claim Your Linktree
             </button>
           </div>
@@ -47,6 +60,7 @@ export default function Home() {
           </button>
         </div>
       </section>
+      <section className=""></section>
     </main>
   );
 }

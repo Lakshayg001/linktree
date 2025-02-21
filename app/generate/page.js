@@ -1,12 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import { useSearchParams, useSearchParamsParams } from "next/navigation";
 
 const Generate = () => {
+  const searchParams = useSearchParams();
   // const [link, setlink] = useState("");
   // const [linktext, setlinktext] = useState("");
   const [links, setLinks] = useState([{ link: "", linktext: "" }]);
-  const [handle, sethandle] = useState("");
+  const [handle, sethandle] = useState(searchParams.get("handle"));
   const [pic, setpic] = useState("");
   const handlechange = (index, link, linktext) => {
     setLinks((initialLink) => {
@@ -43,7 +45,14 @@ const Generate = () => {
 
     const r = await fetch("http://localhost:3000/api/add", requestOptions);
     const result = await r.json();
-    toast(result.message);
+    if (result.success) {
+      toast(result.message);
+      setLinks([]);
+      sethandle("");
+      setpic("");
+    } else {
+      toast.error(result.message);
+    }
     // setlink("");
     // setlinktext("");
   };
@@ -83,7 +92,7 @@ const Generate = () => {
                       className="px-4 py-2 mx-2 my-2
                focus:outline-orange-300 rounded-full"
                       type="text"
-                      placeholder="Enter link Text"
+                      placeholder="Enter link"
                     />
 
                     <input
@@ -93,7 +102,7 @@ const Generate = () => {
                       }}
                       className="px-4 py-2 mx-2 my-2 focus:outline-orange-300 rounded-full"
                       type="text"
-                      placeholder="Enter link"
+                      placeholder="Enter link Text"
                     />
                   </div>
                 );
@@ -121,10 +130,11 @@ const Generate = () => {
                 placeholder="Add your picture"
               />
               <button
+                disabled={pic == "" || handle == "" || links[0].linktext == ""}
                 onClick={() => {
                   submitLinks();
                 }}
-                className="p-5 py-2 rounded-3xl mx-2 bg-orange-800 w-fit my-2 text-white font-bold"
+                className="disabled:bg-slate-500 p-5 py-2 rounded-3xl mx-2 bg-orange-800 w-fit my-2 text-white font-bold"
               >
                 Finalize
               </button>
