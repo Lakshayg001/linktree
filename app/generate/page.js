@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import { useSearchParams, useSearchParamsParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const Generate = () => {
   const searchParams = useSearchParams();
