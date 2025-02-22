@@ -1,15 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
 
-const Generate = () => {
+const GenerateContent = () => {
   const searchParams = useSearchParams();
-  // const [link, setlink] = useState("");
-  // const [linktext, setlinktext] = useState("");
   const [links, setLinks] = useState([{ link: "", linktext: "" }]);
   const [handle, sethandle] = useState(searchParams.get("handle"));
   const [pic, setpic] = useState("");
+
   const handlechange = (index, link, linktext) => {
     setLinks((initialLink) => {
       return initialLink.map((item, i) => {
@@ -21,6 +20,7 @@ const Generate = () => {
       });
     });
   };
+
   const addLink = () => {
     setLinks(links.concat([{ link: "", linktext: "" }]));
   };
@@ -53,9 +53,8 @@ const Generate = () => {
     } else {
       toast.error(result.message);
     }
-    // setlink("");
-    // setlinktext("");
   };
+
   return (
     <div className="bg-orange-400 min-h-screen grid grid-cols-2 ">
       <div className="col1 flex justify-center items-center flex-col ">
@@ -147,6 +146,14 @@ const Generate = () => {
         <ToastContainer />
       </div>
     </div>
+  );
+};
+
+const Generate = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <GenerateContent />
+    </Suspense>
   );
 };
 
