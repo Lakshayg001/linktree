@@ -8,7 +8,6 @@ const GenerateContent = () => {
   const [links, setLinks] = useState([{ link: "", linktext: "" }]);
   const [handle, sethandle] = useState(searchParams.get("handle"));
   const [pic, setpic] = useState("");
-  const url = process.env.NEXT_PUBLIC_HOST;
   const handlechange = (index, link, linktext) => {
     setLinks((initialLink) => {
       return initialLink.map((item, i) => {
@@ -43,7 +42,7 @@ const GenerateContent = () => {
       redirect: "follow",
     };
 
-    const r = await fetch(`${url}/api/add`, requestOptions);
+    const r = await fetch("/api/add", requestOptions);
     const result = await r.json();
     if (result.success) {
       toast(result.message);
